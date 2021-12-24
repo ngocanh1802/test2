@@ -1,0 +1,44 @@
+- Data Pre-processing: Thảo
+
+- Model Building: Model MobileNet(): Minh + Ánh + Thảo
+	Layers: 
+		input_4 (InputLayer) 	--Thảo
+		Conv2D		    	--Minh
+		ReLU			--Ánh
+		BatchNormalization	--Ánh
+		DepthwiseConv2D		--Minh
+		ZeroPadding2D		--Minh
+		GlobalAveragePooling2D	--Minh
+		Dropout			--Ánh
+		Reshape (layer này sau khi build new model sẽ bỏ --> không chú trọng) --Thảo
+		Activation		-- Thảo
+
+- New_model_mask & New_model_dis: về cơ bản hai model giống nhau về các layer. khác nhau label dataset 
+transfer model: lớp đầu vẫn là input_4(Layer_input)
+		lớp cuối sẽ lấy từ layer -4 từ dưới lên để được layer Dropout, 
+				sau đó thêm vào layer Flatten và Dense(***lí do thêm hai layers***) --Minh + Ánh
+				cuối cùng vẫn là layer Activation('sigmoid')
+
+	Layers:
+		input_4
+		Conv2D
+		ReLU
+		BatchNormalization
+		DepthwiseConv2D
+		ZeroPadding2D
+		GlobalAveragePooling2D
+		Dropout
+		Flatten ( transfer model: layer thêm) 	--Minh
+		Dense ( transfer model: layer thêm)	-- Ánh
+		Activation('sigmoid')			--Thảo
+
+	tìm hiểu ý nghĩa dòng code:  Thảo
+		new_model_mask.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+		new_model_dis.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+	tìm hiểu: Minh	
+		history_mask = new_model_mask.fit(X_mask, Y_mask, epochs = 10, validation_split = 0.1)
+
+- Test: 
+	tìm hiểu: Ánh
+		prediction_mask = (new_model_mask.predict(final_img) > 0.5).astype("int32")
